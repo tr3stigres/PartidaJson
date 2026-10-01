@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 public class RoosterPersistente
 {
@@ -15,9 +16,9 @@ public class RoosterPersistente
             
             var informe = new Informe(players.PartidaDatos);
         }
-        else if (ValidarOrden() && ValidarPersonaje(players.PartidaDatos))
+        else if (ValidarOrden())
         {
-            realizarAccion(players.PartidaDatos);
+            realizarAccion(players.PartidaDatos);            
         }
     }
 
@@ -43,24 +44,46 @@ public class RoosterPersistente
     private bool realizarAccion(List<Partida> personaje)
     {
         string[] subs = Accion.Split(' ');
+        bool cambioRealizado = false;
 
         switch (subs[0])
         {
             case "alta":
                 personaje.Add(new Partida(subs[1], 100, "Soldado"));
+                cambioRealizado = true;
                 break;
             case "baja":
-                
-                foreach (var p in personaje)
+                if (ValidarPersonaje(personaje))
                 {
-                    if (p.Nombre == subs[1])
+                    foreach (var p in personaje)
                     {
-                        personaje.Remove(p);
-                        break;
+                        if (p.Nombre == subs[1])
+                        {
+                            personaje.Remove(p);
+                            cambioRealizado = true;
+                            break;
+                        }
                     }
                 }
+                
                 break;
         }
+
+        if (cambioRealizado)
+        {
+            try
+            {
+                new Guardar(personaje);
+                Console.WriteLine("Cambio guardado con éxito.");
+            }
+            catch (Exception error)
+            {
+                Console.WriteLine($"Se ha producido el siguiente error: {error.Message}");
+            }
+            
+        }
+            
+
 
         return true;
     }
