@@ -10,10 +10,9 @@ public class RoosterPersistente
     public RoosterPersistente(string accion)
     {
         var players = new Cargar();
-        Accion = accion.ToLower().Trim();
+        Accion = accion.Trim();
         if (Accion == "")
         {
-            
             var informe = new Informe(players.PartidaDatos);
         }
         else if (ValidarOrden())
@@ -35,7 +34,7 @@ public class RoosterPersistente
     private bool ValidarPersonaje(List<Partida> personaje)
     {
         string[] subs = Accion.Split(' ');
-        if (!personaje.Any(p => subs[1].Contains(p.Nombre.ToLower().Trim())))
+        if (!personaje.Any(p => p.Nombre.ToLower().Trim().Contains(subs[1].ToLower().Trim())))
             throw new ArgumentException("El personaje no existe en la lista.");
         
         return true;
@@ -45,27 +44,50 @@ public class RoosterPersistente
     {
         string[] subs = Accion.Split(' ');
         bool cambioRealizado = false;
+        var registro = personaje.Find(j => j.Nombre.ToLower().Trim() == subs[1].ToLower().Trim());
 
-        switch (subs[0])
+        switch (subs[0].ToLower())
         {
             case "alta":
-                personaje.Add(new Partida(subs[1], 100, "Soldado"));
-                cambioRealizado = true;
+                
+                if (registro == null)
+                {
+                    personaje.Add(new Partida(subs[1], 100, "Soldado"));
+                    cambioRealizado = true;
+                }
+                    
                 break;
             case "baja":
                 if (ValidarPersonaje(personaje))
                 {
-                    foreach (var p in personaje)
+        
+                    if (registro != null)
                     {
-                        if (p.Nombre == subs[1])
-                        {
-                            personaje.Remove(p);
-                            cambioRealizado = true;
-                            break;
-                        }
+                        personaje.Remove(registro);
+                        cambioRealizado = true;
                     }
                 }
                 
+                break;
+            case "vida":
+                if (ValidarPersonaje(personaje))
+                {                    
+                    if(subs[2] != null && int.TryParse(subs[2], out int valor) && valor >= 1 && valor <= 100)
+                    {        
+
+                        if (registro != null)
+                        {
+                            registro.Vida = valor;
+                            cambioRealizado = true;
+                        }                        
+                    }
+                    else
+                    {
+                        throw new ArgumentException("El valor de vida debe ser un número entero entre 1 y 100.");
+                    }
+                    
+                }
+
                 break;
         }
 
@@ -82,9 +104,6 @@ public class RoosterPersistente
             }
             
         }
-            
-
-
         return true;
     }
 

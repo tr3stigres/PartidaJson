@@ -1,7 +1,7 @@
 ﻿public class Partida
 {
     public string Nombre { get; }
-    public int Vida { get; }
+    public int Vida { get; set; }
     public string Tipo { get; }
 
     public Partida(string nombre, int vida, string tipo)

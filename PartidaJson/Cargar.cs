@@ -18,7 +18,7 @@ public class Cargar : TratarFichero
 
         string path = Path.Combine(Dir, NombreFichero);
         StreamReader? lector = null;
-        Console.WriteLine($"Leyendo lista en la ruta: {path}");
+        //Console.WriteLine($"Leyendo lista en la ruta: {path}");
         PartidaDatos = new List<Partida>();
 
         if (!File.Exists(path))

@@ -18,7 +18,7 @@ public class Guardar : TratarFichero
         {
             string path = Path.Combine(Dir, NombreFichero);
             StreamWriter? escritor = null;
-            Console.WriteLine($"Guardando lista en la ruta: {path}");
+            //Console.WriteLine($"Guardando lista en la ruta: {path}");
             try
             {
                 escritor = new StreamWriter(path);
